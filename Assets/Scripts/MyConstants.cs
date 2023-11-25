@@ -1,6 +1,6 @@
-public static class MyConstants
+public static class Constants
 {
-    public const string SAVE_LEVEL = "Level";
+    public const string DATA = "Data";
 
     public const string TAG_WIN = "Win";
     public const string TAG_DEFEAT = "Defeat";

@@ -54,10 +54,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(MyConstants.TAG_WIN))
+        if (other.CompareTag(Constants.TAG_WIN))
             GameController.Instance.Win();
 
-        if (other.CompareTag(MyConstants.TAG_DEFEAT))
+        if (other.CompareTag(Constants.TAG_DEFEAT))
             GameController.Instance.Defeat();
     }
 }

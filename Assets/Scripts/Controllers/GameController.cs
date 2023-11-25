@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Cinemachine.DocumentationSortingAttribute;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -8,14 +10,11 @@ public class GameController : MonoBehaviour
     public bool IsGame => _isGame;
 
     public UIController ControllerUI;
-    public LevelController ControllerLevel;
+    public SaveController ControllerSave;
     public PlayerController ControllerPlayer;
 
-    [Space] 
-    public Config Config;
-
+    private bool _isLoadScene;
     private bool _isGame;
-    private int _indexLevel;
 
     void Awake() 
     {
@@ -27,12 +26,9 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        _indexLevel = PlayerPrefs.GetInt(MyConstants.SAVE_LEVEL);
-
+        ControllerSave.Load();
         ControllerUI.Init();
-        ControllerLevel.Init();
-
-        LoadLevel();
+        LoadCurrentLevel();
     }
 
     public void Game() 
@@ -45,9 +41,6 @@ public class GameController : MonoBehaviour
     {
         _isGame = false;
         ControllerUI.ShowPanelWin();
-
-        _indexLevel++;
-        PlayerPrefs.SetInt(MyConstants.SAVE_LEVEL, _indexLevel);
     }
 
     public void Defeat() 
@@ -56,23 +49,42 @@ public class GameController : MonoBehaviour
         ControllerUI.ShowPanelDefeat();
     }
 
-    public void LoadLevel() 
+    public void LoadCurrentLevel()
     {
-        ControllerLevel.LoadLevel(_indexLevel);
-        ControllerUI.ShowPanelMenu();
+        UnloadScene();
+        LoadScene();
+
         ControllerPlayer.Init();
+        ControllerUI.ShowPanelMenu();
+    }
+    public void LoadNextLevel()
+    {
+        UnloadScene();
+
+        ControllerSave.DataPlayer.Level = ++ControllerSave.DataPlayer.Level >= SceneManager.sceneCountInBuildSettings ? 1 : ControllerSave.DataPlayer.Level;
+        ControllerSave.Save();
+
+        LoadScene();
+
+        ControllerPlayer.Init();
+        ControllerUI.ShowPanelMenu();
     }
 
-    public void LoadNextLevel() 
+    private void LoadScene()
     {
-        ControllerLevel.LoadLevel(_indexLevel);
-        ControllerUI.ShowPanelMenu();
-        ControllerPlayer.Init();
+        if (!_isLoadScene)
+        {
+            _isLoadScene = true;
+            SceneManager.LoadSceneAsync(ControllerSave.DataPlayer.Level, LoadSceneMode.Additive);
+        }
     }
 
-    [ContextMenu("Reset save")]
-    public void ResetSave()
+    private void UnloadScene()
     {
-        PlayerPrefs.DeleteAll();
+        if (_isLoadScene)
+        {
+            _isLoadScene = false;
+            SceneManager.UnloadSceneAsync(ControllerSave.DataPlayer.Level);
+        }
     }
 }

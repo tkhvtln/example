@@ -53,7 +53,7 @@ public class UIController : MonoBehaviour
 
     public void OnButtonRestartLevel() 
     {
-        GameController.Instance.LoadLevel();
+        GameController.Instance.LoadCurrentLevel();
     }
 
     public void Clear() 
