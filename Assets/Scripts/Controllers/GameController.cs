@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,8 +10,8 @@ public class GameController : MonoBehaviour
     public SaveController ControllerSave;
     public PlayerController ControllerPlayer;
 
-    private bool _isLoadScene;
     private bool _isGame;
+    private bool _isLoadScene;
 
     void Awake() 
     {
@@ -52,9 +50,6 @@ public class GameController : MonoBehaviour
     {
         UnloadScene();
         LoadScene();
-
-        ControllerPlayer.Init();
-        ControllerUI.ShowPanelMenu();
     }
     public void LoadNextLevel()
     {
@@ -64,9 +59,6 @@ public class GameController : MonoBehaviour
         ControllerSave.Save();
 
         LoadScene();
-
-        ControllerPlayer.Init();
-        ControllerUI.ShowPanelMenu();
     }
 
     private void LoadScene()
@@ -76,6 +68,9 @@ public class GameController : MonoBehaviour
             _isLoadScene = true;
             SceneManager.LoadSceneAsync(ControllerSave.DataPlayer.Level, LoadSceneMode.Additive);
         }
+
+        ControllerPlayer.Init();
+        ControllerUI.ShowPanelMenu();
     }
 
     private void UnloadScene()
