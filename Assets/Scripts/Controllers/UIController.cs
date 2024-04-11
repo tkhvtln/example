@@ -1,64 +1,70 @@
 using UnityEngine;
+using Zenject;
 
 public class UIController : MonoBehaviour
 {
-    public PanelMenu panelMenu;
-    public PanelGame panelGame;
-    public PanelWin panelWin;
-    public PanelDefeat panelDefeat;
+    private PanelMenu _panelMenu;
+    private PanelGame _panelGame;
+    private PanelWin _panelWin;
+    private PanelDefeat _panelDefeat;
 
-    public void Init() 
+    private GameController _gameController;
+
+    [Inject]
+    private void Construct(PanelMenu panelMenu, PanelGame panelGame, PanelWin panelWin, PanelDefeat panelDefeat, GameController gameController) 
     {
-        panelMenu.Init();
-        panelGame.Init();
-        panelWin.Init();
-        panelDefeat.Init();
+        _panelMenu = panelMenu;
+        _panelGame = panelGame;
+        _panelWin = panelWin;
+        _panelDefeat = panelDefeat;
+
+        _gameController = gameController;
     }
 
     public void ShowPanelMenu() 
     {
         Clear();
-        panelMenu.Show();
+        _panelMenu.Show();
     }
 
     public void ShowPanelGame() 
     {
         Clear();
-        panelGame.Show();
+        _panelGame.Show();
     }
 
     public void ShowPanelWin() 
     {
         Clear();
-        panelWin.Show();
+        _panelWin.Show();
     }
 
     public void ShowPanelDefeat() 
     {
         Clear();
-        panelDefeat.Show();
+        _panelDefeat.Show();
     }
 
     public void OnButtonPlay() 
     {
-        GameController.instance.Game();
+        _gameController.Game();
     }
 
     public void OnButtonNextLevel() 
     {
-        GameController.instance.LoadNextLevel();
+        _gameController.LoadNextLevel();
     }
 
     public void OnButtonRestartLevel() 
     {
-        GameController.instance.LoadCurrentLevel();
+        _gameController.LoadCurrentLevel();
     }
 
     public void Clear() 
     {
-        panelMenu.Hide();
-        panelGame.Hide();
-        panelWin.Hide();
-        panelDefeat.Hide();
+        _panelMenu.Hide();
+        _panelGame.Hide();
+        _panelWin.Hide();
+        _panelDefeat.Hide();
     }
 }

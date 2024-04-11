@@ -2,11 +2,6 @@ using UnityEngine;
 
 public class PanelDefeat : MonoBehaviour
 {
-    public void Init() 
-    {
-
-    }
-
     public void Show() 
     {
         gameObject.SetActive(true);

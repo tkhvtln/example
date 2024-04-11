@@ -1,48 +1,44 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 public class GameController : MonoBehaviour
 {
-    public static GameController instance;
     public bool IsGame { get; private set; }
 
-    public UIController uiController;
-    public SaveController saveController;
-    public PlayerController playerController;
+    private UIController _uiController;
+    private SaveController _saveController;
+    private PlayerController _playerController;
 
     private bool _isLoadScene;
 
-    void Awake() 
+    [Inject]
+    private void Construct(PlayerController playerController, SaveController saveController, UIController uiController)
     {
-        if (instance == null)
-            instance = this;
-        else
-            Destroy(this);
-    }
+        _playerController = playerController;
+        _saveController = saveController;
+        _uiController = uiController;
 
-    void Start()
-    {
-        saveController.Load();
-        uiController.Init();
+        _saveController.Load();
         LoadCurrentLevel();
     }
 
     public void Game() 
     {
         IsGame = true;
-        uiController.ShowPanelGame();
+        _uiController.ShowPanelGame();
     }
 
     public void Win()
     {
         IsGame = false;
-        uiController.ShowPanelWin();
+        _uiController.ShowPanelWin();
     }
 
     public void Defeat() 
     {
         IsGame = false;
-        uiController.ShowPanelDefeat();
+        _uiController.ShowPanelDefeat();
     }
 
     public void LoadCurrentLevel()
@@ -54,8 +50,8 @@ public class GameController : MonoBehaviour
     {
         UnloadScene();
 
-        saveController.data.level = ++saveController.data.level >= SceneManager.sceneCountInBuildSettings ? 1 : saveController.data.level;
-        saveController.Save();
+        _saveController.data.level = ++_saveController.data.level >= SceneManager.sceneCountInBuildSettings ? 1 : _saveController.data.level;
+        _saveController.Save();
 
         LoadScene();
     }
@@ -65,11 +61,11 @@ public class GameController : MonoBehaviour
         if (!_isLoadScene)
         {
             _isLoadScene = true;
-            SceneManager.LoadSceneAsync(saveController.data.level, LoadSceneMode.Additive);
+            SceneManager.LoadSceneAsync(_saveController.data.level, LoadSceneMode.Additive);
         }
 
-        playerController.Init();
-        uiController.ShowPanelMenu();
+        _playerController.Init();
+        _uiController.ShowPanelMenu();
     }
 
     private void UnloadScene()
@@ -77,7 +73,7 @@ public class GameController : MonoBehaviour
         if (_isLoadScene)
         {
             _isLoadScene = false;
-            SceneManager.UnloadSceneAsync(saveController.data.level);
+            SceneManager.UnloadSceneAsync(_saveController.data.level);
         }
     }
 }

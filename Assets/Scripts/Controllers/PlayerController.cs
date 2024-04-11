@@ -1,4 +1,5 @@
 using UnityEngine;
+using Zenject;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,6 +9,15 @@ public class PlayerController : MonoBehaviour
     private Rigidbody _rb;
     private Transform _transform;
     private Vector3 _vecDirection;
+
+    private GameController _gameController;
+
+    [Inject]
+    private void Construct(GameController gameController)
+    {
+        _gameController = gameController;
+        Init();
+    }
 
     public void Init()
     {
@@ -23,7 +33,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!GameController.instance.IsGame)
+        if (!_gameController.IsGame)
             return;
 
         Look();
@@ -31,7 +41,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!GameController.instance.IsGame)
+        if (!_gameController.IsGame)
             return;
 
         Move();
@@ -53,9 +63,9 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(Constants.TAG_WIN))
-            GameController.instance.Win();
+            _gameController.Win();
 
         if (other.CompareTag(Constants.TAG_DEFEAT))
-            GameController.instance.Defeat();
+            _gameController.Defeat();
     }
 }
