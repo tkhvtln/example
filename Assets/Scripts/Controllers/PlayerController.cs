@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!GameController.Instance.IsGame)
+        if (!GameController.instance.IsGame)
             return;
 
         Look();
@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!GameController.Instance.IsGame)
+        if (!GameController.instance.IsGame)
             return;
 
         Move();
@@ -53,9 +53,9 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(Constants.TAG_WIN))
-            GameController.Instance.Win();
+            GameController.instance.Win();
 
         if (other.CompareTag(Constants.TAG_DEFEAT))
-            GameController.Instance.Defeat();
+            GameController.instance.Defeat();
     }
 }

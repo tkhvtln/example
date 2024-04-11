@@ -3,47 +3,46 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public static GameController Instance;
-    public bool IsGame => _isGame;
+    public static GameController instance;
+    public bool IsGame { get; private set; }
 
-    public UIController ControllerUI;
-    public SaveController ControllerSave;
-    public PlayerController ControllerPlayer;
+    public UIController uiController;
+    public SaveController saveController;
+    public PlayerController playerController;
 
-    private bool _isGame;
     private bool _isLoadScene;
 
     void Awake() 
     {
-        if (Instance == null)
-            Instance = this;
+        if (instance == null)
+            instance = this;
         else
             Destroy(this);
     }
 
     void Start()
     {
-        ControllerSave.Load();
-        ControllerUI.Init();
+        saveController.Load();
+        uiController.Init();
         LoadCurrentLevel();
     }
 
     public void Game() 
     {
-        _isGame = true;
-        ControllerUI.ShowPanelGame();
+        IsGame = true;
+        uiController.ShowPanelGame();
     }
 
     public void Win()
     {
-        _isGame = false;
-        ControllerUI.ShowPanelWin();
+        IsGame = false;
+        uiController.ShowPanelWin();
     }
 
     public void Defeat() 
     {
-        _isGame = false;
-        ControllerUI.ShowPanelDefeat();
+        IsGame = false;
+        uiController.ShowPanelDefeat();
     }
 
     public void LoadCurrentLevel()
@@ -55,8 +54,8 @@ public class GameController : MonoBehaviour
     {
         UnloadScene();
 
-        ControllerSave.DataPlayer.Level = ++ControllerSave.DataPlayer.Level >= SceneManager.sceneCountInBuildSettings ? 1 : ControllerSave.DataPlayer.Level;
-        ControllerSave.Save();
+        saveController.data.level = ++saveController.data.level >= SceneManager.sceneCountInBuildSettings ? 1 : saveController.data.level;
+        saveController.Save();
 
         LoadScene();
     }
@@ -66,11 +65,11 @@ public class GameController : MonoBehaviour
         if (!_isLoadScene)
         {
             _isLoadScene = true;
-            SceneManager.LoadSceneAsync(ControllerSave.DataPlayer.Level, LoadSceneMode.Additive);
+            SceneManager.LoadSceneAsync(saveController.data.level, LoadSceneMode.Additive);
         }
 
-        ControllerPlayer.Init();
-        ControllerUI.ShowPanelMenu();
+        playerController.Init();
+        uiController.ShowPanelMenu();
     }
 
     private void UnloadScene()
@@ -78,7 +77,7 @@ public class GameController : MonoBehaviour
         if (_isLoadScene)
         {
             _isLoadScene = false;
-            SceneManager.UnloadSceneAsync(ControllerSave.DataPlayer.Level);
+            SceneManager.UnloadSceneAsync(saveController.data.level);
         }
     }
 }
